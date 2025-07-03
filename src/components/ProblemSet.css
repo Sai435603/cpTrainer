@@ -1,0 +1,58 @@
+.problem-set {
+  background-color: #0d1117;
+  padding: 1.5rem;
+  border-radius: 8px;
+  color: #ffffff;
+  width: 100%;
+  min-width: 400px; /* cap width */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  border: 1px solid white;
+}
+
+.problem-set h2 {
+  margin: 0 0 1rem 1rem;
+  font-size: 1.25rem;
+  display: flex;
+  justify-content: center;
+}
+
+.problem-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  overflow: auto;
+  padding: 0px; /* scroll inside if too many items */
+}
+.problem-list ol {
+  padding: 0px;
+}
+.problem-list li {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  height: 40px;
+  width: 100%;
+  min-width: 300px;
+  margin-bottom: 10px;
+  padding: 0 2rem;
+  border: 1px solid white;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: transparent;
+  transition: background 0.2s, color 0.2s;
+}
+
+.problem-list li:hover {
+  background-color: #ffffff;
+  color: #1f2128;
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+  color: white;
+}

@@ -1,0 +1,21 @@
+/* 1. Make padding & borders included in width calculations */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2. Remove any unexpected body overflow */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.main-container {
+  margin: 0;
+  background-color: #191a20;
+  color: white;
+  width: 100%;
+  min-height: 100vh;
+}

@@ -1,0 +1,70 @@
+.navbar {
+  display: flex;
+  flex-wrap: wrap;           /* allow wrap on very narrow screens */
+  align-items: center;
+  padding: 1rem 2rem;
+  width: 100%;
+  background-color: #0d1117;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbarlogo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.navbarlinks {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-left: 2rem;
+}
+
+.navbarlinks li a {
+  text-decoration: none;
+  font-size: 1rem;
+  color: #cfd8dc;
+  transition: color 0.2s ease-in-out;
+}
+
+.navbarlinks li a:hover {
+  color: #ffffff;
+}
+
+.navbarstreak {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 1.5rem;
+  gap: 0.5rem;
+  color: #cfd8dc;
+}
+
+.streak-icon {
+  font-size: 1.2rem;
+}
+
+.streak-count {
+  font-size: 1rem;
+}
+
+.navbarlogin {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #ffffff;
+  background-color: transparent;
+  border: 2px solid #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.navbarlogin:hover {
+  background-color: #ffffff;
+  color: #1f2128;
+}

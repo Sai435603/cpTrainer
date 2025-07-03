@@ -1,0 +1,53 @@
+.heatmap-wrapper {
+  background-color: #0d1117;
+  padding: 1rem;
+  border-radius: 10px;
+  color: white;
+  width: 100%;
+  max-width: 700px;
+  height: 290px;
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid white ;
+  /* Fix overflow */
+  overflow-x: hidden;
+}
+
+
+
+.react-calendar-heatmap text {
+  fill: #8b949e; /* label color */
+  font-size: 10px;
+}
+.react-calendar-heatmap {
+  height: 125px;
+  margin-top: 20px;
+  margin-right: 13px;
+}
+.react-calendar-heatmap rect {
+  width: 10px;
+  height: 10px;
+  margin: 4px;
+  rx:3px;
+}
+.color-empty {
+  fill: #161b22;
+}
+
+.color-scale-1 {
+  fill: #0e4429;
+}
+
+.color-scale-2 {
+  fill: #006d32;
+}
+
+.color-scale-3 {
+  fill: #26a641;
+}
+
+.color-scale-4 {
+  fill: #39d353;
+}
