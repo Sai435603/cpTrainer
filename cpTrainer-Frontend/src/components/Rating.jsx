@@ -53,9 +53,7 @@ export default function Rating({ userRatings }) {
             dot={{ r: 3 }}
             activeDot={{ r: 6 }}
           />
-          
         </LineChart>
-        
       </ResponsiveContainer>
     </div>
   );
