@@ -22,8 +22,6 @@ const CustomTooltip = ({ active, payload }) => {
         }}
       >
         <div><strong>{data.contestName}</strong></div>
-        <div>Contest ID: {data.contestId}</div>
-        <div>Handle: {data.handle}</div>
         <div>Rank: {data.rank}</div>
         <div>Rating: {data.rating}</div> 
       </div>
@@ -33,7 +31,7 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export default function Rating({ userRatings }) {
-  const {codeforces , codechef} = userRatings;
+  const {codeforces } = userRatings;
   if (!codeforces || codeforces.length === 0) {
     return <div style={{ color: "white" }}>Loading or no rating data available</div>;
   }

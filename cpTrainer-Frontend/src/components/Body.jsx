@@ -1,6 +1,7 @@
 import RatingChart from "./RatingChart";
 import StreakCalendar from "./StreakCalendar";
 import ProblemSet from "./ProblemSet";
+import UpcommingContests from "./UpcomingContests";
 import "./Body.css";
 import { useState } from "react";
 export default function Body() {
@@ -12,6 +13,7 @@ export default function Body() {
         <RatingChart handle={handle} />
         <StreakCalendar />
       </div>
+       <UpcommingContests/>
     </main>
   );
 }
