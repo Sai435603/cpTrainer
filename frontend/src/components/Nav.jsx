@@ -21,7 +21,7 @@ export default function Nav() {
           <a href="/contests">CONTESTS</a>
         </li>
         <li>
-          <a href="/discuss">DISCUSS</a>
+          <a href="/discuss">ANALYTICS</a>
         </li>
       </ul>
       <div className="navbarstreak">

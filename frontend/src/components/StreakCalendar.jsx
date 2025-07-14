@@ -22,7 +22,7 @@ export default function StreakHeatmap() {
   const values = [];
   return (
     <div className="heatmap-wrapper">
-      <h2>Heatmap</h2>
+      <h2 className="title">Heatmap</h2>
       <CalendarHeatmap
         startDate={new Date(new Date().setFullYear(today.getFullYear() - 1))}
         endDate={today}

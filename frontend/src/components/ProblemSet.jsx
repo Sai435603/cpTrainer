@@ -10,7 +10,9 @@ export default function ProblemSet({ handle }) {
   useEffect(() => {
     async function fetchProblems() {
       const res = await fetch(`${baseUrl}/api/problems?handle=${handle}`);
-      setProblems(await res.json());
+      const problems = await res.json();
+      setProblems(problems);
+      // console.log(problems);
       setLoading(false);
     }
     fetchProblems();

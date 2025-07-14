@@ -2,6 +2,7 @@ import Nav from "./components/Nav";
 import Body from "./components/Body";
 import Footer from "./components/Footer";
 import "./App.css";
+import { useEffect } from "react";
 // import { useEffect, useState } from "react";
 function App() {
   // const [problems, setProblems] = useState([]);
