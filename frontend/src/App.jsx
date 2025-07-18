@@ -1,34 +1,22 @@
-import Nav from "./components/Nav";
-import Body from "./components/Body";
-import Footer from "./components/Footer";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { useEffect } from "react";
-// import { useEffect, useState } from "react";
+import Layout from "./components/Layout";
+import Body from "./components/Body";
+import Contests from "./components/Contests";
+import Analytics from "./components/Analytics";
+
 function App() {
-  // const [problems, setProblems] = useState([]);
-  // useEffect(() => {
-  //   async function fetchTenRandomCfProblems() {
-  //     const response = await fetch(
-  //       "https://codeforces.com/api/problemset.problems"
-  //     );
-  //     const userDataResponse = await fetch(
-  //       "https://codeforces.com/api/user.info?handles=tourist"
-  //     );
-  //     const userData = await userDataResponse.json();
-  //     console.log(userData);
-  //     const data = await response.json();
-  //     const problemList = data.result.problems;
-  //     const firstTen = problemList.slice(0, 10);
-  //     setProblems(firstTen);
-  //   }
-  //   fetchTenRandomCfProblems();
-  // }, []);
   return (
-    <div className="main-container">
-      <Nav />
-      <Body />
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Body />} />
+          <Route path="contests" element={<Contests />} />
+          <Route path="analytics" element={<Analytics />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
+
 export default App;

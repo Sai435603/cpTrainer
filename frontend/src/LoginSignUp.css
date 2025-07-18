@@ -1,0 +1,106 @@
+/* LoginSignup.css */
+
+/* Page wrap */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  min-height: 100vh;
+  background-color: #0f1115;
+  font-family: sans-serif;
+}
+*{
+  color:white;
+}
+/* Logo */
+.login-logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 3rem;
+}
+
+/* Card */
+.login-card {
+  background-color: #1f2025;
+  border-radius: 1rem;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+}
+
+/* Tabs */
+.login-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.login-tab {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #999999;
+  padding-bottom: 0.25rem;
+  margin: 0 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.login-tab.active {
+  color: #14b8a6;              /* teal-400 */
+  border-bottom: 2px solid #14b8a6;
+}
+
+/* Form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+.form-group label {
+  font-size: 0.875rem;
+  color: #cccccc;
+  margin-bottom: 0.5rem;
+}
+.form-group input {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #f5f5f5;
+  background-color: #2a2c33;
+  border: 1px solid #3a3c44;
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-group input::placeholder {
+  color: #666666;
+}
+.form-group input:focus {
+  border-color: #14b8a6;
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.3);
+}
+
+/* Button */
+.login-button {
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #14b8a6;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.login-button:hover {
+  background-color: #0f766e;   /* darker teal */
+}
+
+.challenge-text{
+   margin-top: 20px;
+}

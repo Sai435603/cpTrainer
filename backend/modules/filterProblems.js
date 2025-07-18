@@ -47,7 +47,7 @@ async function filterProblems(handle) {
   }
   // ——— 4. Pull ALL problems from your local DB
   const allProblems = await Problem.find();
-  console.log(allProblems);
+  // console.log(allProblems);
   // ——— 5. Filter out solved
   const unsolved = allProblems.filter(
     (p) => !solvedSet.has(`${p.contestId}-${p.index}`)

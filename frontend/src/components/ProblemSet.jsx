@@ -9,11 +9,13 @@ export default function ProblemSet({ handle }) {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function fetchProblems() {
+      if(handle!=""){
       const res = await fetch(`${baseUrl}/api/problems?handle=${handle}`);
       const problems = await res.json();
       setProblems(problems);
       // console.log(problems);
       setLoading(false);
+      }
     }
     fetchProblems();
   }, [handle]);

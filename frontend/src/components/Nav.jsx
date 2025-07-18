@@ -1,5 +1,6 @@
 import "./Nav.css";
 import { FaFire } from "react-icons/fa";
+import { Link } from "react-router-dom";
 export default function Nav() {
   const streak = 1;
   const fireColor =
@@ -15,20 +16,20 @@ export default function Nav() {
       <div className="navbarlogo">CP TRAINER</div>
       <ul className="navbarlinks">
         <li>
-          <a href="/problems">PROBLEMS</a>
+          <Link to="/">PROBLEMS</Link>
         </li>
         <li>
-          <a href="/contests">CONTESTS</a>
+          <Link to="/contests">CONTESTS</Link>
         </li>
         <li>
-          <a href="/discuss">ANALYTICS</a>
+          <Link to="/analytics">ANALYTICS</Link>
         </li>
       </ul>
       <div className="navbarstreak">
         <FaFire className="streak-icon" style={{ color: fireColor }} />
         <span className="streak-count">{streak} days</span>
       </div>
-      <button className="navbarlogin">Login</button>
+      <button className="navbarlogin">Sync Profile</button>
     </nav>
   );
 }

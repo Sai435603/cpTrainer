@@ -1,22 +1,11 @@
 import React from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
-import { Tooltip as ReactTooltip } from "react-tooltip"; // ✅ FIXED
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-calendar-heatmap/dist/styles.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "./StreakCalendar.css";
 
 const today = new Date();
-
-// function generateDummyData(days = 365) {
-//   const data = [];
-//   for (let i = 0; i < days; i++) {
-//     const date = new Date();
-//     date.setDate(today.getDate() - i);
-//     const count = Math.floor(Math.random() * 5);
-//     data.push({ date: date.toISOString().split("T")[0], count });
-//   }
-//   return data.reverse();
-// }
 
 export default function StreakHeatmap() {
   const values = [];

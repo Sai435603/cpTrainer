@@ -1,5 +1,5 @@
 .heatmap-wrapper {
-  background-color: #0d1117;
+  background-color: #191a20;
   padding: 1rem;
   border-radius: 10px;
   color: white;
@@ -14,7 +14,10 @@
   /* Fix overflow */
   overflow-x: hidden;
 }
-.title{
+.heatmap-wrapper:hover {
+  border: 2px solid #14b8a6;
+}
+.title {
   margin: 0 0 1rem 1rem;
   font-size: 1.25rem;
   display: flex;
@@ -53,4 +56,8 @@
 
 .color-scale-4 {
   fill: #39d353;
+}
+.login-tab.active {
+  color: #14b8a6; /* teal-400 */
+  border-bottom: 2px solid #14b8a6;
 }

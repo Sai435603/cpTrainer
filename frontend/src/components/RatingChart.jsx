@@ -9,11 +9,13 @@ export default function RatingChart({ handle }) {
   const [userRatings, setUserRatings] = useState({ codeforces: [] });
   useEffect(() => {
     async function fetchRatings() {
+      if(handle!=""){
       const res = await fetch(`${baseUrl}/api/ratingGraph?handle=${handle}`);
       const ratings = await res.json();
       // console.log(ratings);
       setUserRatings({ ...userRatings, codeforces: ratings });
       setloaderForRating(false);
+      }
     }
     fetchRatings();
   }, []);
