@@ -3,8 +3,7 @@ import StreakCalendar from "./StreakCalendar";
 import ProblemSet from "./ProblemSet";
 import "./Body.css";
 import { useState } from "react";
-export default function Body() {
-  const handle = "";
+export default function Body({ handle }) {
   return (
     <main className="body-container">
       <ProblemSet handle={handle} />
@@ -12,7 +11,7 @@ export default function Body() {
         <RatingChart handle={handle} />
         <StreakCalendar />
       </div>
-       {/* <UpcommingContests/> */}
+      {/* <UpcommingContests/> */}
     </main>
   );
 }

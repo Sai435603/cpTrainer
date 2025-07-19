@@ -1,6 +1,7 @@
 const Problem = require("../models/Problem");
 const fetchAllProblems = require("./fetchCodeforcesProblems");
-async function syncProblems() {
+async function syncProblems(state) {
+  
   const problems = await fetchAllProblems();
   const bulkOps = problems.map((p) => ({
     updateOne: {

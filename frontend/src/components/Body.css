@@ -12,7 +12,7 @@
 }
 
 .problem-set {
-  flex: 2 1 300px;           /* grow=2, shrink=1, basis=300px */
+  flex: 2 1 300px;          
   max-width: 100%;
   margin-right: 5px;
 }
@@ -23,7 +23,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  /* align-items: center;         horizontally center children */
-  justify-content: center;     /* vertically center if needed */
-  text-align: center;          /* optional: center text inside children */
+  /* align-items: center;        */
+  justify-content: center;     
+  text-align: center;          
 }

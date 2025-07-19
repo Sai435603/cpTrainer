@@ -9,6 +9,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
+const cron = require("node-cron");
 const app = express();
 
 dotenv.config();
@@ -26,6 +27,28 @@ mongoose
   .catch((e) => {
     console.log(`Database Connection error: ${e}`);
   });
+
+// --- Midnight update of each user's dailySet ---
+cron.schedule("0 0 * * *", async () => {
+  console.log("Updating users' daily problem sets …");
+  const users = await User.find({}, "handle");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  await Promise.all(
+    users.map(async (userDoc) => {
+      try {
+        const problems = await filterProblems(userDoc.handle);
+        userDoc.dailySet = { date: today, problems };
+        await userDoc.save();
+      } catch (err) {
+        console.error(`Error updating ${userDoc.handle}:`, err);
+      }
+    })
+  );
+
+  console.log("All users updated.");
+});
 
 app.get("/api/problems", async (req, res) => {
   const handle = req.query.handle;
@@ -99,7 +122,7 @@ function passedChallenge(subs, questionUrl) {
   return subs.some((s) => {
     const p = s.problem;
     return (
-      s.verdict === "WRONG_ANSWER" &&
+      s.verdict === "COMPILATION_ERROR" &&
       s.passedTestCount === 0 &&
       s.creationTimeSeconds >= cutoff &&
       p.contestId.toString() === wantedContestId &&
@@ -109,7 +132,8 @@ function passedChallenge(subs, questionUrl) {
 }
 
 async function getRecentSubmissions(handle, count = 10) {
-  const url = `https://codeforces.com/api/user.status?handle=${encodeURIComponent(handle
+  const url = `https://codeforces.com/api/user.status?handle=${encodeURIComponent(
+    handle
   )}&from=1&count=${count}`;
   const response = await fetch(url, {
     headers: {
@@ -130,7 +154,6 @@ async function getRecentSubmissions(handle, count = 10) {
   return data.result;
 }
 
-
 app.post("/login", async (req, res) => {
   const { username, questionUrl } = req.body;
   if (!username) {
@@ -147,7 +170,8 @@ app.post("/login", async (req, res) => {
         const newUrl = await generateChallengeUrl();
         return res.status(401).json({
           questionUrl: newUrl,
-          message: "Please submit a wrong answer on test 1 of this problem within the next 5 minutes to prove your handle."
+          message:
+            "Please submit a wrong answer on test 1 of this problem within the next 5 minutes to prove your handle.",
         });
       }
 
@@ -158,20 +182,23 @@ app.post("/login", async (req, res) => {
         const newUrl = await generateChallengeUrl();
         return res.status(401).json({
           questionUrl: newUrl,
-          message: "Didn't detect a WRONG_ANSWER on test 1. Please try again with this new problem."
+          message:
+            "Didn't detect a Compilation Error on test 1. Please try again with this new problem.",
         });
       }
 
       // Challenge passed → create the user record
-      user = await User.create({ username });
+      user = await User.create({
+        username,
+        rating,
+        dailySet: {},
+      });
     }
-
     // At this point, user exists (either pre‑existing or just created)
     return res.status(200).json({
       message: "Login successful",
-      user: { username: user.username }
+      user: user.username,
     });
-
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ message: "Server error" });

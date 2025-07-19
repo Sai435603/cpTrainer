@@ -1,17 +1,21 @@
-import { StrictMode, useState } from "react";
+import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import LoginSignUp from "./LoginSignUp.jsx";
 function RootComponent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [handle, setHandle] = useState("");
   return (
-    <StrictMode>
+    <div>
       {isAuthenticated ? (
-        <App />
+        <App handle={handle} />
       ) : (
-        <LoginSignUp setIsAuthenticated={setIsAuthenticated} />
+        <LoginSignUp
+          setIsAuthenticated={setIsAuthenticated}
+          setHandle={setHandle}
+        />
       )}
-    </StrictMode>
+    </div>
   );
 }
 

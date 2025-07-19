@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./LoginSignup.css";
 
-export default function LoginSignup({ setIsAuthenticated }) {
+export default function LoginSignup({ setIsAuthenticated, setHandle }) {
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const [questionUrl, setQuestionUrl] = useState(null);
@@ -21,7 +21,7 @@ export default function LoginSignup({ setIsAuthenticated }) {
       const response = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username , questionUrl}),
+        body: JSON.stringify({ username, questionUrl }),
       });
 
       if (response.status === 401) {
@@ -43,6 +43,7 @@ export default function LoginSignup({ setIsAuthenticated }) {
       const data = await response.json();
       console.log("Login successful:", data);
       setIsAuthenticated(true);
+      setHandle(data.user);
     } catch (err) {
       console.error("Fetch error:", err);
       setError("Network error — please try again later.");
@@ -67,15 +68,24 @@ export default function LoginSignup({ setIsAuthenticated }) {
             />
           </div>
 
-          <button type="submit" className="login-button">Login</button>
+          <button type="submit" className="login-button">
+            Login
+          </button>
         </form>
-       
       </div>
       {questionUrl && (
         <strong className="challenge-text">
-          You need to make a wrong submission on this problem within 5 minutes: <u>
-          <a href={questionUrl} target="_blank" rel="noopener noreferrer">{questionUrl}</a>
+          You need get a <u>compiler error</u> verdict on this problem within 5 minutes to authenticate:{" "}
+          <u>
+            <a href={questionUrl} target="_blank" rel="noopener noreferrer">
+              {questionUrl}
+            </a>
           </u>
+        </strong>
+      )}
+      {error && (
+        <strong className="challenge-text">
+          Error: {error}
         </strong>
       )}
     </div>
