@@ -2,10 +2,10 @@ import React from "react";
 import Nav from "./Nav";
 import { Outlet } from "react-router-dom";
 
-const Layout = () => {
+const Layout = ({streak}) => {
   return (
     <div className="main-container">
-      <Nav />
+      <Nav streak={streak}/>
       <Outlet />
     </div>
   );

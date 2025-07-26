@@ -4,11 +4,11 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import "react-calendar-heatmap/dist/styles.css";
 import "react-tooltip/dist/react-tooltip.css";
 import "./StreakCalendar.css";
+import { useEffect } from "react";
 
 const today = new Date();
 
-export default function StreakHeatmap() {
-  const values = [];
+export default function StreakHeatmap({ values }) {
   return (
     <div className="heatmap-wrapper">
       <h2 className="title">Heatmap</h2>

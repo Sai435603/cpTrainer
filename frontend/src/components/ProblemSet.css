@@ -60,3 +60,8 @@ a {
 .problem-set:hover {
   border: 2px solid #14b8a6;
 }
+.problem-list li.solved {
+  background-color: #d4edda;
+  color: #155724;
+  font-weight: bold;
+}

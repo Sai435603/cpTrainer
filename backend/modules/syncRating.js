@@ -6,19 +6,19 @@ async function fetchRating(handle) {
   const response = await fetch(url);
   if (!response.ok) throw new Error("Failed to fetch rating");
   const data = await response.json();
-  return data.result; // array of contest rating changes
+  return data.result;
 }
 
 async function syncRating() {
   const users = await User.find({});
   for (const user of users) {
     try {
-      const ratingHistory = await fetchRating(user.handle);
+      const ratingHistory = await fetchRating(user.username);
       user.rating = ratingHistory;
       await user.save();
-      console.log(`Rating synced for ${user.handle}`);
+      console.log(`Rating synced for ${user.usernamedle}`);
     } catch (err) {
-      console.error(`Failed to sync rating for ${user.handle}:`, err.message);
+      console.error(`Failed to sync rating for ${user.username}:`, err.message);
     }
   }
 }

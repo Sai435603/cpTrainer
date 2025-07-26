@@ -1,8 +1,7 @@
 import "./Nav.css";
 import { FaFire } from "react-icons/fa";
 import { Link } from "react-router-dom";
-export default function Nav() {
-  const streak = 1;
+export default function Nav({ streak }) {
   const fireColor =
     streak >= 10
       ? "#e74c3c"

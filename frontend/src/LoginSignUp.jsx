@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import "./LoginSignup.css";
 
-export default function LoginSignup({ setIsAuthenticated, setHandle }) {
+export default function LoginSignup({
+  setIsAuthenticated,
+  setHandle,
+  setUserStreak,
+}) {
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
   const [questionUrl, setQuestionUrl] = useState(null);
@@ -44,6 +48,7 @@ export default function LoginSignup({ setIsAuthenticated, setHandle }) {
       console.log("Login successful:", data);
       setIsAuthenticated(true);
       setHandle(data.user);
+      setUserStreak(data.streak);
     } catch (err) {
       console.error("Fetch error:", err);
       setError("Network error — please try again later.");
@@ -75,7 +80,8 @@ export default function LoginSignup({ setIsAuthenticated, setHandle }) {
       </div>
       {questionUrl && (
         <strong className="challenge-text">
-          You need get a <u>compiler error</u> verdict on this problem within 5 minutes to authenticate:{" "}
+          You need get a <u>compiler error</u> verdict on this problem within 5
+          minutes to authenticate:{" "}
           <u>
             <a href={questionUrl} target="_blank" rel="noopener noreferrer">
               {questionUrl}
@@ -83,11 +89,7 @@ export default function LoginSignup({ setIsAuthenticated, setHandle }) {
           </u>
         </strong>
       )}
-      {error && (
-        <strong className="challenge-text">
-          Error: {error}
-        </strong>
-      )}
+      {error && <strong className="challenge-text">Error: {error}</strong>}
     </div>
   );
 }

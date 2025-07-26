@@ -1,48 +1,59 @@
-const filterProblems = require("./modules/filterProblems");
-const fetchRating = require("./modules/fetchRating");
-const fetchUpcomingContests = require("./modules/fetchUpcomingContests");
-const syncJob = require("./modules/syncJob");
-const User = require("./models/User");
-const Problem = require("./models/Problem");
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const cron = require("node-cron");
-const app = express();
+const User = require("./models/User");
+const Problem = require("./models/Problem");
+const filterProblems = require("./modules/filterProblems");
+const fetchRating = require("./modules/fetchRating");
+const fetchUpcomingContests = require("./modules/fetchUpcomingContests");
+const getStreak = require("./modules/getStreak");
+const syncJob = require("./modules/syncJob");
 
-dotenv.config();
-const frontendOrigin = process.env.FRONTEND_ORIGIN;
+const app = express();
 const PORT = process.env.PORT || 3000;
-app.use(cors({ origin: frontendOrigin }));
+
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN }));
 app.use(express.json());
+
+// —————— Mongoose Connection ——————
 mongoose
   .connect("mongodb://127.0.0.1:27017/cpTrainer")
   .then(async () => {
     console.log("Database Connected In Main");
-    //Fetch in the start once
     await syncJob();
   })
   .catch((e) => {
-    console.log(`Database Connection error: ${e}`);
+    console.error(`Database Connection error: ${e}`);
   });
 
-// --- Midnight update of each user's dailySet ---
+// —————— Midnight cron to refresh dailySets ——————
 cron.schedule("0 0 * * *", async () => {
   console.log("Updating users' daily problem sets …");
-  const users = await User.find({}, "handle");
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // Fetch each user's username
+  const users = await User.find({}, "username");
   await Promise.all(
-    users.map(async (userDoc) => {
+    users.map(async (u) => {
       try {
-        const problems = await filterProblems(userDoc.handle);
-        userDoc.dailySet = { date: today, problems };
+        const problemsWithFlags = await filterProblems(u.username);
+        // save the raw subdocs (filterProblems() already both saves and returns
+        // the populated list, but here we ensure date+ids get updated)
+        const userDoc = await User.findOne({ username: u.username });
+        userDoc.dailySet = {
+          date: today,
+          problems: problemsWithFlags.map(({ problem }) => ({
+            problem: problem._id,
+            isSolved: false,
+          })),
+        };
         await userDoc.save();
       } catch (err) {
-        console.error(`Error updating ${userDoc.handle}:`, err);
+        console.error(`Error updating ${u.username}:`, err);
       }
     })
   );
@@ -50,108 +61,114 @@ cron.schedule("0 0 * * *", async () => {
   console.log("All users updated.");
 });
 
+// —————— Routes ——————
+
 app.get("/api/problems", async (req, res) => {
-  const handle = req.query.handle;
+  const { handle } = req.query;
   if (!handle) {
     return res.status(400).json({ error: "Missing handle" });
   }
-  console.log(`Fetching problems for user: ${handle}`);
   try {
-    const problems = await filterProblems(handle);
-    res.json(problems);
-  } catch (error) {
-    console.error("Error:", error.message);
+    const list = await filterProblems(handle);
+    res.json(list);
+  } catch (err) {
+    console.error("Error in /api/problems:", err);
     res.status(500).json({ error: "Failed to fetch problems" });
   }
 });
 
 app.get("/api/ratingGraph", async (req, res) => {
-  const handle = req.query.handle;
+  const { handle } = req.query;
   if (!handle) {
     return res.status(400).json({ error: "Missing handle" });
   }
-  console.log(`Fetching Rating of user: ${handle}`);
   try {
     const ratings = await fetchRating(handle);
     res.json(ratings);
-  } catch (error) {
-    console.error("Error:", error.message);
+  } catch (err) {
+    console.error("Error in /api/ratingGraph:", err);
     res.status(500).json({ error: "Failed to fetch ratings" });
   }
 });
 
 app.get("/api/upcomingContests", async (req, res) => {
-  console.log(`Fetching Upcoming Contests`);
   try {
     const contests = await fetchUpcomingContests();
     res.json(contests);
-  } catch (error) {
-    console.error("Error:", error.message);
-    res.status(500).json({ error: "Failed to fetch Upcoming Contests" });
+  } catch (err) {
+    console.error("Error in /api/upcomingContests:", err);
+    res.status(500).json({ error: "Failed to fetch upcoming contests" });
+  }
+});
+// in your Express setup, after importing User…
+
+app.get("/api/streak", async (req, res) => {
+  const { handle } = req.query;
+  if (!handle) {
+    return res.status(400).json({ error: "Missing handle" });
+  }
+
+  try {
+    const user = await User.findOne({ username: handle }).populate(
+      "dailySets.problems.problem"
+    );
+
+    if (!user || user.dailySets.length === 0) {
+      return res.json([]);
+    }
+
+    // Map each saved day → { date: "YYYY-MM-DD", count: # solved }
+    const history = user.dailySets.map((ds) => {
+      const date = ds.date.toISOString().slice(0, 10);
+      const count = ds.problems.filter((p) => p.isSolved).length;
+      return { date, count };
+    });
+
+    res.json(history);
+  } catch (err) {
+    console.error("Error in /api/streak:", err);
+    res.status(500).json({ error: "Failed to fetch streak history" });
   }
 });
 
-// LOGIN Code Start Here
-// Utility: fetch recent submissions for a handle using native fetch
+// —————— Login / Sign‑up Challenge ——————
+
 async function generateChallengeUrl() {
   try {
-    const problem = await getRandomProblem();
+    const problem = await Problem.aggregate([{ $sample: { size: 1 } }]).then(
+      (arr) => arr[0]
+    );
     return `https://codeforces.com/problemset/problem/${problem.contestId}/${problem.index}`;
-  } catch (err) {
-    console.warn("Could not fetch random problem, defaulting to problemset");
+  } catch {
     return "https://codeforces.com/problemset";
   }
-}
-// Fetch a random problem from the Problems collection
-async function getRandomProblem() {
-  const [random] = await Problem.aggregate([{ $sample: { size: 1 } }]);
-  return random; // expects fields { contestId, index }
 }
 
 function passedChallenge(subs, questionUrl) {
   if (!questionUrl) return false;
-
-  // extract contestId and index from URL, e.g. "/problem/1234/A"
   const match = questionUrl.match(/problem\/(\d+)\/([A-Za-z0-9]+)/);
   if (!match) return false;
-  const [_, wantedContestId, wantedIndex] = match.map((v) => v.toString());
+  const [_, wantC, wantI] = match;
+  const cutoff = Math.floor(Date.now() / 1000) - 5 * 60;
 
-  const now = Math.floor(Date.now() / 1000);
-  const cutoff = now - 5 * 60;
-
-  return subs.some((s) => {
-    const p = s.problem;
-    return (
+  return subs.some(
+    (s) =>
       s.verdict === "COMPILATION_ERROR" &&
       s.passedTestCount === 0 &&
       s.creationTimeSeconds >= cutoff &&
-      p.contestId.toString() === wantedContestId &&
-      p.index === wantedIndex
-    );
-  });
+      s.problem.contestId.toString() === wantC &&
+      s.problem.index === wantI
+  );
 }
 
 async function getRecentSubmissions(handle, count = 10) {
   const url = `https://codeforces.com/api/user.status?handle=${encodeURIComponent(
     handle
   )}&from=1&count=${count}`;
-  const response = await fetch(url, {
-    headers: {
-      Accept: "application/json",
-      "User-Agent": "CP-Trainer-App/1.0",
-    },
-    redirect: "follow",
-  });
-  if (!response.ok) {
-    console.error(`CF API responded with HTTP ${response.status}`);
-    return [];
-  }
-  const data = await response.json();
-  if (data.status !== "OK") {
-    console.error(`CF API error: ${data.comment || "No comment"}`);
-    return [];
-  }
-  return data.result;
+  const res = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.status === "OK" ? data.result : [];
 }
 
 app.post("/login", async (req, res) => {
@@ -163,47 +180,61 @@ app.post("/login", async (req, res) => {
   try {
     let user = await User.findOne({ username });
 
-    // If user doesn't exist, we need to issue (or verify) a challenge
+    // New user flow: challenge
     if (!user) {
-      // No challenge URL submitted yet → issue a new one
       if (!questionUrl) {
-        const newUrl = await generateChallengeUrl();
+        const url = await generateChallengeUrl();
         return res.status(401).json({
-          questionUrl: newUrl,
+          questionUrl: url,
           message:
-            "Please submit a wrong answer on test 1 of this problem within the next 5 minutes to prove your handle.",
+            "Please submit a wrong answer on test #1 of this problem within 5 minutes.",
         });
       }
 
-      // A challenge URL *was* submitted → check their recent CF submissions
       const subs = await getRecentSubmissions(username, 10);
       if (!passedChallenge(subs, questionUrl)) {
-        // Failed the check → issue another challenge
-        const newUrl = await generateChallengeUrl();
+        const url = await generateChallengeUrl();
         return res.status(401).json({
-          questionUrl: newUrl,
-          message:
-            "Didn't detect a Compilation Error on test 1. Please try again with this new problem.",
+          questionUrl: url,
+          message: "Didn’t detect the compilation error. Please try again.",
         });
       }
 
-      // Challenge passed → create the user record
+      // Fetch *current* rating (last newRating in the array)
+      const rtRes = await fetch(
+        `https://codeforces.com/api/user.rating?handle=${encodeURIComponent(
+          username
+        )}`
+      );
+      const rtData = await rtRes.json();
+      if (rtData.status !== "OK" || !rtData.result.length) {
+        throw new Error("Failed to fetch initial rating");
+      }
+
+      const currentRating = rtData.result[rtData.result.length - 1].newRating;
+
+      // Create user WITHOUT an empty dailySet
       user = await User.create({
         username,
-        rating,
-        dailySet: {},
+        rating: currentRating,
+        streak: 0,
       });
     }
-    // At this point, user exists (either pre‑existing or just created)
+
+    //  At this point, user exists
+    const userStreak = await getStreak(user.username);
+
     return res.status(200).json({
       message: "Login successful",
       user: user.username,
+      streak: userStreak,
     });
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 });
+
 app.listen(PORT, () => {
-  console.log(`App is running on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });
