@@ -23,7 +23,7 @@ function App({ handle, streak }) {
         <Route path="/" element={<Layout streak={streak}/>}>
           <Route index element={<Body handle={handle} values={values} />} />
           <Route path="contests" element={<Contests />} />
-          <Route path="analytics" element={<Analytics />} />
+          <Route path="analytics" element={<Analytics handle = {handle}/>} />
         </Route>
       </Routes>
     </Router>

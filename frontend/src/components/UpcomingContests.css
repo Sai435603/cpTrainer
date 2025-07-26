@@ -12,7 +12,8 @@
   gap: 1rem;
   box-sizing: border-box;
   height: auto; /* Let it grow based on content */
-  min-height: 700px;
+  min-height: 600px;
+  padding-top: 6%;
 }
 
 .contests:hover {
@@ -24,6 +25,9 @@
   font-size: 1.5rem;
   font-weight: 600;
   text-align: center;
+  border: 1px solid white;
+  border-radius: 15px;
+  padding: 8px;
 }
 
 .contest-list {
@@ -53,6 +57,9 @@
   background-color: #ffffff;
   color: #000000;
   cursor: pointer;
+  .contest-name{
+     color: #000000;
+  }
 }
 
 .contest-logo {
@@ -75,7 +82,6 @@
   padding: 0 0.5rem;
   word-wrap: break-word;
 }
-
 .contest-date {
   font-size: 0.9rem;
   color: #a0aec0;

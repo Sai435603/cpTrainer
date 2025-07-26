@@ -1,7 +1,7 @@
 import "./ProblemSet.css";
 
 export default function ProblemList({ problems }) {
-  console.log(problems);
+  // console.log(problems);
   return (
     <div className="problem-list">
       <ol>

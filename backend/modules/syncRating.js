@@ -18,7 +18,7 @@ async function syncRating() {
       await user.save();
       console.log(`Rating synced for ${user.usernamedle}`);
     } catch (err) {
-      console.error(`Failed to sync rating for ${user.username}:`, err.message);
+      // console.error(`Failed to sync rating for ${user.username}:`, err.message);
     }
   }
 }

@@ -45,7 +45,7 @@ export default function LoginSignup({
       }
 
       const data = await response.json();
-      console.log("Login successful:", data);
+      // console.log("Login successful:", data);
       setIsAuthenticated(true);
       setHandle(data.user);
       setUserStreak(data.streak);
